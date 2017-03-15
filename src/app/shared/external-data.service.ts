@@ -25,7 +25,8 @@ export class ExternalDataService {
       {key:'ENG', value:'England'},
       {key:'ESP', value:'Spain'},
       {key:'ITA', value:'Italy'},
-      {key:'DEU', value:'Germany'}];
+      {key:'DEU', value:'Germany'},
+      {key:'TEST1', value:'No Country'}];
   }
 
   getTeams() : Array<TeamsLookup>{

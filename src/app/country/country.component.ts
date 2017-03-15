@@ -1,10 +1,9 @@
-///<reference path="../../../node_modules/@angular/core/src/metadata/lifecycle_hooks.d.ts"/>
-///<reference path="../../../node_modules/rxjs/add/operator/take.d.ts"/>
-
 import {Component, OnDestroy} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {Subscription} from 'rxjs/Subscription';
 import 'rxjs/add/operator/map';
+import 'rxjs/add/operator/take';
+
 import {ExternalDataService, TeamsLookup, TeamLookup} from '../shared/external-data.service';
 
 @Component({
@@ -15,7 +14,7 @@ import {ExternalDataService, TeamsLookup, TeamLookup} from '../shared/external-d
             <th>Country</th>
         </thead>
         <tbody>
-            <tr *ngFor="let item of getTeams(); let i = index">
+            <tr *ngFor="let item of currentTeam?.teams; let i = index">
                 <td>({{i}}).{{item.team}}</td>
             </tr>
         </tbody>
@@ -31,9 +30,10 @@ export class CountryComponent implements OnDestroy {
               private dataService: ExternalDataService) {
     this.routeStream = route
       .params
-      .subscribe(p => this.currentTeam = dataService
+      .map(x  => dataService
         .getTeams()
-        .filter(y => y.country === p['id'])[0]);
+        .filter(y => y.country === x['id']))
+      .subscribe(p => this.currentTeam = p[0]);
   }
 
   ngOnDestroy() {
