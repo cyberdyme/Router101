@@ -5,10 +5,11 @@
 import {NgModule} from '@angular/core';
 import {CountryComponent} from './country.component';
 import {countryRouting} from "./country.route";
+import {CommonModule} from "@angular/common";
 
 
 @NgModule({
-    imports: [countryRouting, ],
+    imports: [countryRouting, CommonModule],
     exports: [CountryComponent],
     declarations: [CountryComponent],
     providers: [],

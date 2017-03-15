@@ -5,9 +5,14 @@ export interface CountryLookup {
   value: string
 }
 
+export interface  TeamLookup
+{
+  team: string;
+}
+
 export interface TeamsLookup {
   country: string,
-  team: string,
+  teams: Array<TeamLookup>
 }
 
 @Injectable()
@@ -25,7 +30,44 @@ export class ExternalDataService {
 
   getTeams() : Array<TeamsLookup>{
     return [
-      {country:'ENG', team:''},
-    ];
+      {
+        country: 'ENG',
+        teams: [
+          {team: 'Arsenal'},
+          {team: 'Liverpool'},
+          {team: 'Manchester United'},
+          {team: 'Chelsea'}
+        ]
+      },
+      {
+        country: 'ESP',
+        teams: [
+          {team: 'FC Barcelona'},
+          {team: 'Real Madrid C.F.'},
+          {team: 'Atletico Madrid'},
+          {team: 'Sevilla'}
+        ]
+      },
+      {
+        country: 'ITA',
+        teams: [
+          {team: 'Juventus'},
+          {team: 'Milan'}
+        ]
+      },
+      {
+        country: 'ITA',
+        teams: [
+          {team: 'Juventus'},
+          {team: 'Milan'}
+        ]
+      },
+      {
+        country: 'DEU',
+        teams: [
+          {team: 'FC Bayern Munich'},
+          {team: 'Borussia Dortmund'}
+        ]
+      }];
   }
 }
