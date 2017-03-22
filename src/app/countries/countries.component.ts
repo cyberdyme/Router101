@@ -4,15 +4,10 @@ import {ExternalDataService, CountryLookup} from "../shared/external-data.servic
 @Component({
   selector: 'app-countries',
   templateUrl: 'countries.component.html',
-  styles: [
-    `tr:nth-child(even) {
-      background-color: lightgray;
-    }`,
-    `table, thead, th {border: 1px solid black;}`
-  ]
+  styleUrls: ['countries.component.css']
 })
 export class CountriesComponent implements OnInit {
-  @ViewChild('GBGroup') GBGroup : ElementRef;
+  circleColour : string = 'yellow';
 
   constructor(private dataService: ExternalDataService) {
 
@@ -25,9 +20,8 @@ export class CountriesComponent implements OnInit {
   ngOnInit() {
   }
 
-  mouseOver()
+  mouseOver(event)
   {
-    this.GBGroup.nativeElement.style.color = 'green';
-    console.log("change the colour")
+    console.log(event.target)
   }
 }
