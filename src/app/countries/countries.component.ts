@@ -1,20 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit, ViewChild, ElementRef} from '@angular/core';
 import {ExternalDataService, CountryLookup} from "../shared/external-data.service";
 
 @Component({
   selector: 'app-countries',
-  template: `
-    <table>
-        <thead>
-            <th>Country</th>
-        </thead>
-        <tbody>
-            <tr *ngFor="let item of getCountries(); let i = index">
-                <td><a [routerLink]="item.key">({{i}}).{{item.value}}</a></td>
-            </tr>
-        </tbody>
-    </table>
-  `,
+  templateUrl: 'countries.component.html',
   styles: [
     `tr:nth-child(even) {
       background-color: lightgray;
@@ -23,6 +12,7 @@ import {ExternalDataService, CountryLookup} from "../shared/external-data.servic
   ]
 })
 export class CountriesComponent implements OnInit {
+  @ViewChild('GBGroup') GBGroup : ElementRef;
 
   constructor(private dataService: ExternalDataService) {
 
@@ -35,4 +25,9 @@ export class CountriesComponent implements OnInit {
   ngOnInit() {
   }
 
+  mouseOver()
+  {
+    this.GBGroup.nativeElement.style.color = 'green';
+    console.log("change the colour")
+  }
 }

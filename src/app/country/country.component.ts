@@ -8,17 +8,10 @@ import {ExternalDataService, TeamsLookup, TeamLookup} from '../shared/external-d
 
 @Component({
   selector: 'app-country',
-  template: `
-    <table>
-        <thead>
-            <th>Country</th>
-        </thead>
-        <tbody>
-            <tr *ngFor="let item of currentTeam?.teams; let i = index">
-                <td>({{i}}).{{item.team}}</td>
-            </tr>
-        </tbody>
-    </table>
+  template: `    
+    <ul *ngFor="let item of currentTeam?.teams">
+      <li>{{item.team}}</li>
+    </ul>
   `,
   styles: []
 })
