@@ -1,4 +1,4 @@
-import {Component, OnInit, ViewChild, ElementRef} from '@angular/core';
+import {Component, OnInit, ViewChild, ElementRef, Renderer, ViewChildren} from '@angular/core';
 import {ExternalDataService, CountryLookup} from "../shared/external-data.service";
 
 @Component({
@@ -7,9 +7,12 @@ import {ExternalDataService, CountryLookup} from "../shared/external-data.servic
   styleUrls: ['countries.component.css']
 })
 export class CountriesComponent implements OnInit {
+  selectedCountry: string = "gb";
   circleColour : string = 'yellow';
 
-  constructor(private dataService: ExternalDataService) {
+  @ViewChildren('table1')  allPaths;
+
+  constructor(private dataService: ExternalDataService, private render:Renderer) {
 
   }
 
@@ -22,6 +25,13 @@ export class CountriesComponent implements OnInit {
 
   mouseOver(event)
   {
-    console.log(event.target)
+    console.log(this.allPaths.toArray().map(x => x.nativeElement.children));
+    this.render.setElementStyle(event.target,"fill","blue");
+  }
+
+  mouseOut(event)
+  {
+    this.render.setElementStyle(event.target,"fill","red");
+    console.log(event.target.id)
   }
 }
