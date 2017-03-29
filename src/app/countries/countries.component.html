@@ -11,12 +11,13 @@
   </table>
 
   <svg id="svg1" height="100" width="100" viewBox="0 0 100 100">
-    <circle id="circle1" (mouseenter)="mouseOver($event)" (mouseleave)="mouseOut($event)"
-            r="20" cx="50" cy="50" [attr.fill]="circleColour"/>
+    <circle id="circle1" r="20" cx="50" cy="50" [attr.fill]="circleColour"/>
     <circle id="circle2" class="orangeClass" (mouseover)="mouseOver($event)" r="10" cx="70" cy="70"/>
   </svg>
 
   <svg #table1 xmlns="http://www.w3.org/2000/svg" width="680" height="520"
+       (click)="mouseClick($event)"
+       (mouseenter)="mouseOver($event)" (mouseleave)="mouseOut($event)"
        viewBox="1754 161 9938 7945" version="1.0" id="svg2">
     <title id="title4">Countries of Europe</title>
     <desc id="desc6"> A blank Map of Europe. Every country has an id which is its ISO-3166-1-ALPHA2 code in lower case.
