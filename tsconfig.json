@@ -5,6 +5,7 @@
     "sourceMap": true,
     "declaration": false,
     "moduleResolution": "node",
+    "typescript_tsdk": "/Users/girishthanki/.config/yarn/global/node_modules/typescript/lib",
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "lib": [
