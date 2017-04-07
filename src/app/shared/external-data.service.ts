@@ -1,4 +1,11 @@
 import { Injectable } from '@angular/core';
+import {Http} from "@angular/http";
+import {IIsoMapItem} from "./IIsoMapItem";
+
+import 'rxjs/add/operator/map'
+import 'rxjs/add/operator/mergeMap'
+import {Observable} from "rxjs";
+
 
 export interface CountryLookup {
   key: string,
@@ -18,7 +25,25 @@ export interface TeamsLookup {
 @Injectable()
 export class ExternalDataService {
 
-  constructor() { }
+  constructor(private http:Http){
+
+  }
+
+  getIso3166Mapping(countryCode: string): Observable<IIsoMapItem> {
+    /*
+    return this.http.request('./assets/iso3166-2Mapping.json')
+      .flatMap(res => res.json())
+      .filter((x:IIsoMapItem) => x.Code === countryCode);
+     */
+    return this.getIso3166MappingAll()
+      .flatMap(x => x)
+      .filter((x:IIsoMapItem) => x.Code === countryCode);
+  }
+
+  getIso3166MappingAll(): Observable<IIsoMapItem[]> {
+    return this.http.request('./assets/iso3166-2Mapping.json')
+      .map(res => res.json());
+  }
 
   getCountries() :  Array<CountryLookup> {
     return [
