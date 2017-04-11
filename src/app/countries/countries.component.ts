@@ -47,5 +47,24 @@ export class CountriesComponent implements OnInit {
       console.log(x.Name);
     });
     //console.log(event.target.id)
+
+    /*
+    this.allPaths.toArray().map(x =>
+    {
+      let allChildren: HTMLAllCollection=x.nativeElement.children as HTMLAllCollection;
+      let allChildItems =[].slice.call(allChildren);
+
+      allChildItems.forEach(y => {
+        if(y as HTMLElement) {
+          const pathItem= y as HTMLElement;
+
+          const parser = new DOMParser()
+          const doc = parser.parseFromString(pathItem.outerHTML, "text/xml");
+          console.log(pathItem.id + " - "+ doc);
+
+        }
+      });
+    })
+    */
   }
 }

@@ -937,7 +937,8 @@
   },
   {
     "Name": "United Kingdom",
-    "Code": "GB"
+    "Code": "GB",
+    "PathFiles": ["gb-gbn","gb-nir"]
   },
   {
     "Name": "United States",

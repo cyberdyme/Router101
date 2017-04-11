@@ -30,11 +30,6 @@ export class ExternalDataService {
   }
 
   getIso3166Mapping(countryCode: string): Observable<IIsoMapItem> {
-    /*
-    return this.http.request('./assets/iso3166-2Mapping.json')
-      .flatMap(res => res.json())
-      .filter((x:IIsoMapItem) => x.Code === countryCode);
-     */
     return this.getIso3166MappingAll()
       .flatMap(x => x)
       .filter((x:IIsoMapItem) => x.Code === countryCode);
