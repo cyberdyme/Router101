@@ -77,6 +77,14 @@ export class CountryStore
           console.log(`Finding path for ${matchingPath.id}`);
         });
       }
+      else
+      {
+        if(!_.isNil(pathsDictionary[x.Code.toLowerCase()]))
+        {
+          x.PathIds = [x.Code.toLowerCase()];
+          x.Paths = [pathsDictionary[x.Code.toLowerCase()]];
+        }
+      }
     });
 
     return countries;
@@ -85,8 +93,8 @@ export class CountryStore
   getCountries(): Observable<IIsoMapItem[]> {
     return this.http.request('./assets/iso3166-2Mapping.json')
     .map(res => res.json())
-    .do((x:IIsoMapItem[]) => this.allCountriesSubject.next(x))
     .switchMap(x => this.getPaths('./assets/allPathsForEurope.json',x))
+    .do((x:IIsoMapItem[]) => this.allCountriesSubject.next(x))
     .first()
     .publishLast().refCount();
   }

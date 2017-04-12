@@ -297,11 +297,13 @@
   },
   {
     "Name": "Finland",
-    "Code": "FI"
+    "Code": "FI",
+    "PathIds": ["fi"]
   },
   {
     "Name": "France",
-    "Code": "FR"
+    "Code": "FR",
+    "PathIds": ["fr"]
   },
   {
     "Name": "French Guiana",

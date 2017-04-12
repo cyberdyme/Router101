@@ -25,7 +25,17 @@ export class CountriesComponent implements OnInit {
   }
 
   getMapPaths(): Observable<IIsoMapItem[]> {
+    return this.countriesStore.allCountries$.map((x: IIsoMapItem[]) => {
+      return _.filter(x, (y: IIsoMapItem) => {
+        if(!_.isNil(y.Paths))
+        {
+          console.log("processing "+y.Code);
+        }
+        return !(_.isNil(y) || _.isNil(y.Paths));
+      });
+    });
 
+    /*
     const item:IIsoMapItem ={
       "Name": "United Kingdom",
       "Code": "GB",
@@ -38,6 +48,7 @@ export class CountriesComponent implements OnInit {
     };
 
     return Observable.of([item]);
+    */
   }
 
   getCountries() :  Array<CountryLookup> {
@@ -46,7 +57,7 @@ export class CountriesComponent implements OnInit {
 
   ngOnInit() {
     this.pathsList = this.getMapPaths();
-    
+
     this.countriesStore.allCountries$.subscribe( x =>
     {
       console.log('subject ='+x.length);
