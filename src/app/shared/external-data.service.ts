@@ -2,10 +2,10 @@ import { Injectable } from '@angular/core';
 import {Http} from "@angular/http";
 import {IIsoMapItem} from "./IIsoMapItem";
 
-import 'rxjs/add/operator/map'
-import 'rxjs/add/operator/mergeMap'
-import {Observable} from "rxjs";
-
+import 'rxjs/add/operator/map';
+import 'rxjs/add/operator/mergeMap';
+import {BehaviorSubject, Observable} from "rxjs";
+import * as _ from "lodash";
 
 export interface CountryLookup {
   key: string,
@@ -22,6 +22,35 @@ export interface TeamsLookup {
   teams: Array<TeamLookup>
 }
 
+
+@Injectable()
+export class CountryStore
+{
+  private subject = new BehaviorSubject<IIsoMapItem[]>(null);
+  private subject1 = new BehaviorSubject<IIsoMapItem>(null);
+
+  public currentCountry$ = this.subject1.asObservable();
+  public allCountries$ = this.subject.asObservable();
+
+  constructor(private http:Http){
+  }
+
+  getCountry(currentCountry: string) {
+    var allCountries=this.subject.getValue();
+    var match = _.find(allCountries, (x:IIsoMapItem) => x.Code == currentCountry);
+    this.subject1.next(match);
+  }
+
+  getCountries(requestUrl: string): Observable<IIsoMapItem[]> {
+    return this.http.request(requestUrl)
+    .map(res => res.json())
+    .do(x => this.subject.next(x))
+    .first()
+    .publishLast().refCount();
+  }
+}
+
+
 @Injectable()
 export class ExternalDataService {
 
@@ -32,6 +61,7 @@ export class ExternalDataService {
   getIso3166Mapping(countryCode: string): Observable<IIsoMapItem> {
     return this.getIso3166MappingAll()
       .flatMap(x => x)
+      .do((x:IIsoMapItem) => this.Populate(x))
       .filter((x:IIsoMapItem) => x.Code === countryCode);
   }
 
@@ -90,5 +120,14 @@ export class ExternalDataService {
           {team: 'Borussia Dortmund'}
         ]
       }];
+  }
+
+  private Populate(x: IIsoMapItem) {
+    if(x.PathFiles.length > 0){
+      for(const file of x.PathFiles)
+      {
+        this.http.request('./assets/iso3166-2Mapping.json')
+      }
+    }
   }
 }

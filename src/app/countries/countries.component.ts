@@ -2,7 +2,7 @@ import {
   Component, OnInit, ViewChildren, Renderer2, RendererStyleFlags2
 } from '@angular/core';
 
-import {ExternalDataService, CountryLookup} from "../shared/external-data.service";
+import {ExternalDataService, CountryLookup, CountryStore} from "../shared/external-data.service";
 import {Observable} from 'rxjs/Rx';
 import 'rxjs/add/operator/filter';
 import {IIsoMapItem} from "../shared/IIsoMapItem";
@@ -19,7 +19,7 @@ export class CountriesComponent implements OnInit {
 
   @ViewChildren('table1')  allPaths;
 
-  constructor(private dataService: ExternalDataService, private render:Renderer2) {
+  constructor(private dataService: ExternalDataService, private countriesStore : CountryStore) {
 
   }
 
@@ -28,6 +28,26 @@ export class CountriesComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.countriesStore.allCountries$.subscribe( x =>
+    {
+      console.log('subject ='+x.length);
+    });
+
+    this.countriesStore.getCountries('./assets/iso3166-2Mapping.json').subscribe(x =>
+    {
+      console.log("store ="+x.length);
+    });
+
+    this.countriesStore.currentCountry$.subscribe( (x:IIsoMapItem) =>
+    {
+      x!=null ? console.log("current count =" + x.Code): null;
+    },
+    err => {
+      console.log("current count error =" + err);
+    },
+      () =>{
+      console.log("done");
+    });
   }
 
   mouseOver(event) {
@@ -42,10 +62,15 @@ export class CountriesComponent implements OnInit {
 
   mouseClick(event) {
     let countryCode: string = event.target.id;
+    this.countriesStore.getCountry(countryCode.toUpperCase());
+
+    /*
     this.dataService.getIso3166Mapping(countryCode.toUpperCase())
       .subscribe( (x: IIsoMapItem) =>{
       console.log(x.Name);
     });
+    */
+
     //console.log(event.target.id)
 
     /*
