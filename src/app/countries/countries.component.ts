@@ -2,11 +2,9 @@ import {
   Component, OnInit, ViewChildren, Renderer2, RendererStyleFlags2
 } from '@angular/core';
 
-import {ExternalDataService, CountryLookup, CountryStore} from "../shared/external-data.service";
-import {Observable} from 'rxjs/Rx';
+import {ExternalDataService, CountryLookup, CountryStore, IIsoMapItem} from "../shared/external-data.service";
 import 'rxjs/add/operator/filter';
-import {IIsoMapItem} from "../shared/IIsoMapItem";
-
+import * as _ from "lodash";
 
 @Component({
   selector: 'app-countries',
@@ -33,14 +31,14 @@ export class CountriesComponent implements OnInit {
       console.log('subject ='+x.length);
     });
 
-    this.countriesStore.getCountries('./assets/iso3166-2Mapping.json').subscribe(x =>
+    this.countriesStore.getCountries().subscribe(x =>
     {
       console.log("store ="+x.length);
     });
 
-    this.countriesStore.currentCountry$.subscribe( (x:IIsoMapItem) =>
+    this.countriesStore.currentCountry$.filter(x => !(_.isNil(x))).subscribe( (x:IIsoMapItem) =>
     {
-      x!=null ? console.log("current count =" + x.Code): null;
+      console.log("current count =" + x.Code);
     },
     err => {
       console.log("current count error =" + err);

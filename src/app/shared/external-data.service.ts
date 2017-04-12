@@ -1,11 +1,23 @@
 import { Injectable } from '@angular/core';
 import {Http} from "@angular/http";
-import {IIsoMapItem} from "./IIsoMapItem";
-
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/mergeMap';
 import {BehaviorSubject, Observable} from "rxjs";
 import * as _ from "lodash";
+
+
+export interface IPathInfo
+{
+  id: string;
+  data: string
+}
+
+export interface  IIsoMapItem {
+  Name : string;
+  Code : string;
+  PathIds : string[];
+  Paths : IPathInfo[]
+}
 
 export interface CountryLookup {
   key: string,
@@ -26,25 +38,55 @@ export interface TeamsLookup {
 @Injectable()
 export class CountryStore
 {
-  private subject = new BehaviorSubject<IIsoMapItem[]>(null);
-  private subject1 = new BehaviorSubject<IIsoMapItem>(null);
+  private allCountriesSubject = new BehaviorSubject<IIsoMapItem[]>(null);
+  private currentCountrySubject = new BehaviorSubject<IIsoMapItem>(null);
 
-  public currentCountry$ = this.subject1.asObservable();
-  public allCountries$ = this.subject.asObservable();
+  public currentCountry$ = this.currentCountrySubject.asObservable();
+  public allCountries$ = this.allCountriesSubject.asObservable();
 
   constructor(private http:Http){
   }
 
   getCountry(currentCountry: string) {
-    var allCountries=this.subject.getValue();
+    var allCountries=this.allCountriesSubject.getValue();
     var match = _.find(allCountries, (x:IIsoMapItem) => x.Code == currentCountry);
-    this.subject1.next(match);
+    this.currentCountrySubject.next(match);
   }
 
-  getCountries(requestUrl: string): Observable<IIsoMapItem[]> {
+
+  getPaths(requestUrl: string, countries: IIsoMapItem[]): Observable<IIsoMapItem[]> {
     return this.http.request(requestUrl)
+      .map(res => res.json())
+      .map((x:IPathInfo[]) => this.combineCountryAndPath(countries, x))
+  }
+
+  private combineCountryAndPath(countries: IIsoMapItem[], paths: IPathInfo[]): IIsoMapItem[] {
+    const pathsDictionary: _.Dictionary<IPathInfo> = _.keyBy(paths, 'id');
+
+    console.log(`Finding path`);
+
+    _.forEach(countries, (x:IIsoMapItem) =>{
+      if(!(_.isNil(x.PathIds)))
+      {
+        console.log(`Finding path for ${x.Code}`);
+
+        x.Paths = [];
+        _.forEach(x.PathIds, (y:string) => {
+            var matchingPath = pathsDictionary[y];
+            x.Paths.push(matchingPath);
+          console.log(`Finding path for ${matchingPath.id}`);
+        });
+      }
+    });
+
+    return countries;
+  }
+
+  getCountries(): Observable<IIsoMapItem[]> {
+    return this.http.request('./assets/iso3166-2Mapping.json')
     .map(res => res.json())
-    .do(x => this.subject.next(x))
+    .do((x:IIsoMapItem[]) => this.allCountriesSubject.next(x))
+    .switchMap(x => this.getPaths('./assets/allPathsForEurope.json',x))
     .first()
     .publishLast().refCount();
   }
@@ -61,7 +103,6 @@ export class ExternalDataService {
   getIso3166Mapping(countryCode: string): Observable<IIsoMapItem> {
     return this.getIso3166MappingAll()
       .flatMap(x => x)
-      .do((x:IIsoMapItem) => this.Populate(x))
       .filter((x:IIsoMapItem) => x.Code === countryCode);
   }
 
@@ -120,14 +161,5 @@ export class ExternalDataService {
           {team: 'Borussia Dortmund'}
         ]
       }];
-  }
-
-  private Populate(x: IIsoMapItem) {
-    if(x.PathFiles.length > 0){
-      for(const file of x.PathFiles)
-      {
-        this.http.request('./assets/iso3166-2Mapping.json')
-      }
-    }
   }
 }
