@@ -5,6 +5,8 @@ import {
 import {ExternalDataService, CountryLookup, CountryStore, IIsoMapItem} from "../shared/external-data.service";
 import 'rxjs/add/operator/filter';
 import * as _ from "lodash";
+import {Observable} from "rxjs";
+
 
 @Component({
   selector: 'app-countries',
@@ -14,11 +16,28 @@ import * as _ from "lodash";
 export class CountriesComponent implements OnInit {
   selectedCountry: string = "gb";
   circleColour : string = 'yellow';
+  pathsList:Observable<IIsoMapItem[]>;
+
 
   @ViewChildren('table1')  allPaths;
 
   constructor(private dataService: ExternalDataService, private countriesStore : CountryStore) {
+  }
 
+  getMapPaths(): Observable<IIsoMapItem[]> {
+
+    const item:IIsoMapItem ={
+      "Name": "United Kingdom",
+      "Code": "GB",
+      "PathIds": ["gb-gbn","gb-nir"],
+      "Paths" :
+        [{
+          id : "gb",
+          data: "M150 0 L750 2000 L2250 2000 Z"
+        }]
+    };
+
+    return Observable.of([item]);
   }
 
   getCountries() :  Array<CountryLookup> {
@@ -26,6 +45,8 @@ export class CountriesComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.pathsList = this.getMapPaths();
+    
     this.countriesStore.allCountries$.subscribe( x =>
     {
       console.log('subject ='+x.length);
