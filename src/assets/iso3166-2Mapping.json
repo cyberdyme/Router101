@@ -940,7 +940,7 @@
   {
     "Name": "United Kingdom",
     "Code": "GB",
-    "PathIds": ["gb-gbn","gb-nir"]
+    "PathIds": ["gb"]
   },
   {
     "Name": "United States",
